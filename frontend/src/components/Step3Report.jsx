@@ -173,9 +173,28 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
   const finalScore50 = normalizeTo50(rawFinalScore);
   const finalPct = toPercentageFrom50(finalScore50);
 
-  const avgConf50 = normalizeTo50(metrics.avgConfidence ?? interviewData.avgConfidence);
-  const avgComm50 = normalizeTo50(metrics.avgCommunication ?? interviewData.avgCommunication);
-  const avgCorr50 = normalizeTo50(metrics.avgCorrectness ?? interviewData.avgCorrectness);
+  // Averages a raw per-question metric (0-10 scale) across all questions.
+  // The backend doesn't currently send avgConfidence/avgCommunication/
+  // avgCorrectness, so this computes them client-side from the same
+  // per-question data that powers the Question Breakdown section below.
+  const averageQuestionMetric = (key, altKey) => {
+    if (!questions.length) return 0;
+    const total = questions.reduce((sum, q) => {
+      const val = q[key] ?? q[altKey] ?? 0;
+      return sum + (Number(val) || 0);
+    }, 0);
+    return total / questions.length;
+  };
+
+  const avgConf50 = normalizeTo50(
+    metrics.avgConfidence ?? interviewData.avgConfidence ?? averageQuestionMetric('confidence', 'confidenceScore')
+  );
+  const avgComm50 = normalizeTo50(
+    metrics.avgCommunication ?? interviewData.avgCommunication ?? averageQuestionMetric('communication', 'communicationScore')
+  );
+  const avgCorr50 = normalizeTo50(
+    metrics.avgCorrectness ?? interviewData.avgCorrectness ?? averageQuestionMetric('correctness', 'correctnessScore')
+  );
 
   const finalScoreColors = getScoreColorConfig(finalScore50);
   const confColors = getScoreColorConfig(avgConf50);
@@ -310,7 +329,7 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
                 <line x1="0" y1="130" x2="500" y2="130" stroke="#334155" strokeDasharray="4 4" strokeWidth="1" />
 
                 <text x="5" y="25" fill="#94a3b8" fontSize="10">10</text>
-                <text x="5" y="75" fill="#94a3b8" fontSize="10">6</text>
+                <text x="5" y="75" fill="#94a3b8" fontSize="10">5</text>
                 <text x="5" y="125" fill="#94a3b8" fontSize="10">0</text>
 
                 <defs>

@@ -33,6 +33,7 @@ function Step2Interview({ interviewData, onFinish }) {
   // Report generation (fires once the last question's feedback is dismissed)
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportError, setReportError] = useState(null);
+  const [reportData, setReportData] = useState(null);
 
   // ---------------- Voice (AI asks / user answers) ----------------
   const [isSpeaking, setIsSpeaking] = useState(false);     // AI reading the question aloud
@@ -53,6 +54,11 @@ function Step2Interview({ interviewData, onFinish }) {
   const currentQuestion = questions[currentIndex] || {};
   const timeLimit = currentQuestion.timeLimit || currentQuestion.timelimit || 60;
   const [timeLeft, setTimeLeft] = useState(timeLimit);
+
+  // Tracks whether the intro/welcome message has already been spoken, so it
+  // only auto-plays once rather than re-firing on every re-render.
+  const introSpokenRef = useRef(false);
+  const introText = `Welcome, ${username || 'Candidate'}! You are ready to start your AI evaluated interview. The AI will read each question aloud. You can answer by typing or speaking, whichever is easier.`;
 
   // Set up SpeechRecognition once on mount
   useEffect(() => {
@@ -114,6 +120,19 @@ function Step2Interview({ interviewData, onFinish }) {
       };
       loadVoices();
       window.speechSynthesis.onvoiceschanged = loadVoices;
+
+      // Warm-up: Chrome/Edge's speech engine has a real cold-start delay
+      // (often 1-3s) on the very first utterance of a page session. Firing
+      // a silent, near-instant utterance immediately reduces that delay for
+      // the first real question, since the engine is already "spun up" by
+      // the time the user clicks Start Interview.
+      try {
+        const warmup = new SpeechSynthesisUtterance(' ');
+        warmup.volume = 0;
+        window.speechSynthesis.speak(warmup);
+      } catch (e) {
+        // no-op: warm-up is best-effort only
+      }
     }
 
     return () => {
@@ -126,29 +145,43 @@ function Step2Interview({ interviewData, onFinish }) {
     if (!text || !window.speechSynthesis) return;
 
     const doSpeak = () => {
+      const wasSpeaking = window.speechSynthesis.speaking || window.speechSynthesis.pending;
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.95;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      if (preferredVoiceRef.current) {
-        utterance.voice = preferredVoiceRef.current;
-      }
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(utterance);
 
-      // Chrome bug workaround: long utterances can get silently paused.
-      // Nudging resume() periodically while speaking keeps audio flowing.
-      const keepAlive = setInterval(() => {
-        if (!window.speechSynthesis.speaking) {
-          clearInterval(keepAlive);
-          return;
+      const startSpeaking = () => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        if (preferredVoiceRef.current) {
+          utterance.voice = preferredVoiceRef.current;
         }
-        window.speechSynthesis.pause();
-        window.speechSynthesis.resume();
-      }, 4000);
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => setIsSpeaking(false);
+        window.speechSynthesis.speak(utterance);
+
+        // Chrome bug workaround: long utterances can get silently paused.
+        // Nudging resume() periodically while speaking keeps audio flowing.
+        const keepAlive = setInterval(() => {
+          if (!window.speechSynthesis.speaking) {
+            clearInterval(keepAlive);
+            return;
+          }
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }, 4000);
+      };
+
+      // Chrome/Edge can silently stall if speak() is called immediately
+      // after cancel() while something was actively speaking. A tiny delay
+      // only in that case avoids the stall without adding lag to the
+      // common case (nothing was speaking, e.g. the very first question).
+      if (wasSpeaking) {
+        setTimeout(startSpeaking, 60);
+      } else {
+        startSpeaking();
+      }
     };
 
     // If voices haven't loaded yet, wait briefly rather than speaking with none.
@@ -190,6 +223,18 @@ function Step2Interview({ interviewData, onFinish }) {
     }
   };
 
+  // Best-effort: try to have the AI speak the welcome/intro message as soon
+  // as the interview screen loads. Some browsers (notably Safari) block
+  // speech that isn't triggered by a direct user gesture, so this may be
+  // silently blocked — the speaker icon next to the welcome message lets
+  // the user trigger it manually in that case.
+  useEffect(() => {
+    if (phase !== 'intro' || introSpokenRef.current || !voiceOutputSupported) return;
+    introSpokenRef.current = true;
+    speakQuestion(introText);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, voiceOutputSupported]);
+
   // Reset timer and answer when switching questions, then have the AI ask it aloud
   useEffect(() => {
     if (phase !== 'question') return;
@@ -200,12 +245,17 @@ function Step2Interview({ interviewData, onFinish }) {
     baseAnswerRef.current = '';
     setEvaluationResult(null);
 
-    // Speaking is also triggered directly inside handleStartInterview /
-    // handleNextFromFeedback (the actual click handlers) because some
-    // browsers block speechSynthesis.speak() unless it runs synchronously
-    // inside a user gesture. This effect-based call is a fallback for cases
-    // where the phase changes without a fresh click (e.g. fast re-renders).
-    speakQuestion(questions[currentIndex]?.question);
+    // NOTE: speakQuestion is intentionally NOT called here anymore.
+    // It's triggered directly inside handleStartInterview / handleNextFromFeedback
+    // (the actual click handlers) instead, for two reasons:
+    //   1. Browsers require speechSynthesis.speak() to run synchronously inside
+    //      a user gesture, or it can be silently blocked.
+    //   2. Calling it here AS WELL caused speakQuestion to fire twice per
+    //      question (once from the click handler, once from this effect),
+    //      which meant a second speechSynthesis.cancel() interrupted the
+    //      utterance that had just started — Chrome introduces a noticeable
+    //      stall when speak() is called immediately after cancel(), which is
+    //      exactly the "pause before speaking" symptom this was causing.
 
     return () => {
       window.speechSynthesis?.cancel();
@@ -362,10 +412,21 @@ function Step2Interview({ interviewData, onFinish }) {
     } else {
       setIsSubmitting(true);
       const report = await generateReport();
-      if (typeof onFinish === 'function') {
-        await onFinish(report);
-      }
       setIsSubmitting(false);
+
+      if (report) {
+        setReportData(report);
+        setPhase('report');
+      }
+      // If report generation failed, reportError is already set and the
+      // "Finish Interview" button stays visible so the user can retry.
+    }
+  };
+
+  // Called from the final report screen once the user is done reviewing it.
+  const handleFinishAndExit = async () => {
+    if (typeof onFinish === 'function') {
+      await onFinish(reportData);
     }
   };
 
@@ -774,6 +835,117 @@ function Step2Interview({ interviewData, onFinish }) {
                     ) : (
                       <HiOutlineChevronRight className="text-sm" />
                     )}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* 4. FINAL REPORT PHASE */}
+            {phase === 'report' && reportData && (
+              <motion.div
+                key="report-phase"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-6"
+              >
+                <div className="flex items-center gap-2 text-cyan-400 font-semibold text-sm">
+                  <HiOutlineCheckCircle className="text-lg" />
+                  <span>Your Interview Report</span>
+                </div>
+
+                {/* Overall score, if the backend provides one under any common key */}
+                {(reportData.overallScore ?? reportData.score ?? reportData.totalScore) !== undefined && (
+                  <div className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800 text-center space-y-1">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      Overall Score
+                    </p>
+                    <p className="text-3xl font-bold text-cyan-400">
+                      {reportData.overallScore ?? reportData.score ?? reportData.totalScore}
+                      <span className="text-base text-slate-500">/10</span>
+                    </p>
+                  </div>
+                )}
+
+                {/* Summary, if provided */}
+                {(reportData.summary || reportData.overview) && (
+                  <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                      <HiOutlineSparkles />
+                      <span>Summary</span>
+                    </div>
+                    <p className="text-sm text-slate-300 leading-relaxed">
+                      {reportData.summary || reportData.overview}
+                    </p>
+                  </div>
+                )}
+
+                {/* Strengths / Improvements, if provided as arrays */}
+                {(Array.isArray(reportData.strengths) || Array.isArray(reportData.improvements)) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Array.isArray(reportData.strengths) && (
+                      <div className="p-4 rounded-2xl bg-slate-950/60 border border-emerald-500/20 space-y-2">
+                        <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                          Strengths
+                        </p>
+                        <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                          {reportData.strengths.map((item, idx) => (
+                            <li key={idx}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {Array.isArray(reportData.improvements) && (
+                      <div className="p-4 rounded-2xl bg-slate-950/60 border border-amber-500/20 space-y-2">
+                        <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                          Areas to Improve
+                        </p>
+                        <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                          {reportData.improvements.map((item, idx) => (
+                            <li key={idx}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Recommendation, if provided */}
+                {reportData.recommendation && (
+                  <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-1">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      Recommendation
+                    </p>
+                    <p className="text-sm text-slate-300">{reportData.recommendation}</p>
+                  </div>
+                )}
+
+                {/* Fallback: raw report data, in case the backend shape doesn't
+                    match any of the fields above. Ensures nothing is hidden. */}
+                {!reportData.summary &&
+                  !reportData.overview &&
+                  !Array.isArray(reportData.strengths) &&
+                  !Array.isArray(reportData.improvements) &&
+                  !reportData.recommendation && (
+                    <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-2">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        Report Data
+                      </p>
+                      <pre className="text-[11px] text-slate-300 whitespace-pre-wrap break-words">
+                        {JSON.stringify(reportData, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={handleFinishAndExit}
+                    className="py-3 px-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>Continue</span>
+                    <HiOutlineChevronRight className="text-sm" />
                   </button>
                 </div>
               </motion.div>
