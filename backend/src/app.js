@@ -7,7 +7,7 @@ import interviewRouter from './routes/interview.route.js';
 import PaymentRouter from './routes/payment.route.js';
 const app=express()
 app.use(cors({
-    origin: "http://localhost:5173", credentials:true
+    origin: "https://interviewx-frontend-rg5o.onrender.com", credentials:true
 }))
 app.use(cookieParser());
 app.use(express.json());
