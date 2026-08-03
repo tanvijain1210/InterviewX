@@ -57,7 +57,6 @@ function InterviewReport({ theme = 'cyan' }) {
   // Utility to scale a score into a score out of 50
   const normalizeTo50 = (val) => {
     const raw = Number(val) || 0;
-    // If raw score is already out of 50 (>10), keep it; if out of 10, scale up by 5
     const score = raw > 10 ? raw : raw * 5;
     return Math.min(50, Math.max(0, Math.round(score * 10) / 10));
   };
@@ -236,45 +235,71 @@ function InterviewReport({ theme = 'cyan' }) {
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block print:space-y-6">
 
-      {/* Card 2: Skill Breakdown (/ 50) */}
-          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
-            <h3 className="text-sm font-bold text-slate-200">Skill Breakdown</h3>
+          {/* LEFT COLUMN: Summary & Skill Breakdown */}
+          <div className="lg:col-span-4 space-y-6">
 
-            <div className="space-y-4">
-              {/* Confidence */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-300">Confidence</span>
-                  <span className={confColors.text}>{avgConf50} / 50</span>
-                </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className={`${confColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgConf50)}%` }} />
-                </div>
+            {/* Card 1: Overall Performance Score */}
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-200">Overall Assessment Score</h3>
+              <div className="flex items-baseline gap-2">
+                <span className={`text-5xl font-black ${finalScoreColors.text}`}>
+                  {finalScore50}
+                </span>
+                <span className="text-xl text-slate-500 font-semibold">/ 50</span>
+                <span className="ml-auto text-sm font-bold text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/50">
+                  {finalPct}%
+                </span>
               </div>
 
-              {/* Communication */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-300">Communication</span>
-                  <span className={commColors.text}>{avgComm50} / 50</span>
-                </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className={`${commColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgComm50)}%` }} />
-                </div>
+              <div className="pt-2 border-t border-slate-800/80 space-y-1">
+                <p className={`text-sm font-bold ${finalScoreColors.text}`}>
+                  {performanceFeedback.title}
+                </p>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  {performanceFeedback.subtitle}
+                </p>
               </div>
+            </div>
 
-              {/* Correctness */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-300">Correctness</span>
-                  <span className={corrColors.text}>{avgCorr50} / 50</span>
+            {/* Card 2: Skill Breakdown (/ 50) */}
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
+              <h3 className="text-sm font-bold text-slate-200">Skill Breakdown</h3>
+
+              <div className="space-y-4">
+                {/* Confidence */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs font-semibold">
+                    <span className="text-slate-300">Confidence</span>
+                    <span className={confColors.text}>{avgConf50} / 50</span>
+                  </div>
+                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div className={`${confColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgConf50)}%` }} />
+                  </div>
                 </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className={`${corrColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgCorr50)}%` }} />
+
+                {/* Communication */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs font-semibold">
+                    <span className="text-slate-300">Communication</span>
+                    <span className={commColors.text}>{avgComm50} / 50</span>
+                  </div>
+                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div className={`${commColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgComm50)}%` }} />
+                  </div>
+                </div>
+
+                {/* Correctness */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs font-semibold">
+                    <span className="text-slate-300">Correctness</span>
+                    <span className={corrColors.text}>{avgCorr50} / 50</span>
+                  </div>
+                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div className={`${corrColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgCorr50)}%` }} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
           </div>
 
