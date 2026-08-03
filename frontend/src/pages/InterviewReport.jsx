@@ -182,9 +182,28 @@ function InterviewReport({ theme = 'cyan' }) {
   const finalScore50 = normalizeTo50(rawFinalScore);
   const finalPct = toPercentageFrom50(finalScore50);
 
-  const avgConf50 = normalizeTo50(metrics?.avgConfidence ?? interviewData.avgConfidence);
-  const avgComm50 = normalizeTo50(metrics?.avgCommunication ?? interviewData.avgCommunication);
-  const avgCorr50 = normalizeTo50(metrics?.avgCorrectness ?? interviewData.avgCorrectness);
+  // Averages a raw per-question metric (0-10 scale) across all questions.
+  // Falls back to 0 only if there are genuinely no questions to average.
+  const averageQuestionMetric = (key, altKey) => {
+    if (!questions.length) return 0;
+    const total = questions.reduce((sum, q) => {
+      const val = q[key] ?? q[altKey] ?? 0;
+      return sum + (Number(val) || 0);
+    }, 0);
+    return total / questions.length;
+  };
+
+  // Prefer backend-provided averages if present; otherwise compute them
+  // directly from the per-question scores, which are always available.
+  const avgConf50 = normalizeTo50(
+    metrics?.avgConfidence ?? interviewData.avgConfidence ?? averageQuestionMetric('confidence', 'confidenceScore')
+  );
+  const avgComm50 = normalizeTo50(
+    metrics?.avgCommunication ?? interviewData.avgCommunication ?? averageQuestionMetric('communication', 'communicationScore')
+  );
+  const avgCorr50 = normalizeTo50(
+    metrics?.avgCorrectness ?? interviewData.avgCorrectness ?? averageQuestionMetric('correctness', 'correctnessScore')
+  );
 
   const finalScoreColors = getScoreColorConfig(finalScore50);
   const confColors = getScoreColorConfig(avgConf50);
