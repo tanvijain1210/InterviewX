@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   HiOutlineDownload,
   HiOutlineRefresh,
   HiOutlineArrowLeft,
+  HiOutlineHome,
   HiOutlineShieldCheck,
   HiOutlineChatAlt2,
   HiOutlineCheckCircle
 } from 'react-icons/hi';
 import { serverUrl } from '../App';
 
-function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan' }) {
+function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBack, theme = 'cyan' }) {
+  const navigate = useNavigate();
+  // Support two usage patterns:
+  //  1. Rendered directly by a parent that already has the data (passes
+  //     `interviewId` / `report` as props — e.g. from Step2Interview).
+  //  2. Rendered as its own route (e.g. `/report/:id`) with no props at
+  //     all — in that case fall back to the URL param so the report still
+  //     loads instead of silently rendering nothing.
+  const { id: idFromRoute } = useParams();
+  const interviewId = interviewIdProp || idFromRoute;
+
   const [report, setReport] = useState(initialReport || null);
   const [loading, setLoading] = useState(!initialReport && Boolean(interviewId));
   const [error, setError] = useState(null);
@@ -146,28 +158,54 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
     return (
       <div className="p-8 text-center bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 text-slate-300 space-y-4 shadow-2xl">
         <p className="text-rose-400 font-medium">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition-all shadow-lg"
-        >
-          <HiOutlineRefresh className="text-base" /> Retry Loading
-        </button>
+        <div className="flex items-center justify-center gap-3">
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl text-xs font-semibold transition-all shadow-lg"
+          >
+            <HiOutlineHome className="text-base" /> Back to Home
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition-all shadow-lg"
+          >
+            <HiOutlineRefresh className="text-base" /> Retry Loading
+          </button>
+        </div>
       </div>
     );
   }
 
   if (!report) {
     return (
-      <div className="p-8 text-center bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 text-slate-400">
-        No assessment report data available.
+      <div className="p-8 text-center bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 text-slate-400 space-y-4">
+        <p>No assessment report data available.</p>
+        <button
+          onClick={() => navigate('/')}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl text-xs font-semibold transition-all shadow-lg mx-auto"
+        >
+          <HiOutlineHome className="text-base" /> Back to Home
+        </button>
       </div>
     );
   }
 
   // Normalization
-  const interviewData = report.interview || report.data?.interview || report;
-  const metrics = report.metrics || report.data?.metrics || {};
-  const questions = interviewData.questions || report.questions || [];
+  // Try several likely shapes since the exact response format from
+  // /api/interview/generate-report isn't fully confirmed yet.
+  const interviewData =
+    report.interview || report.data?.interview || report.data?.data?.interview || report.data || report;
+  const metrics = report.metrics || report.data?.metrics || report.data?.data?.metrics || {};
+  const questions = interviewData.questions || report.questions || report.data?.questions || [];
+
+  // Debug: log the raw shapes so we can see exactly what the backend sent.
+  // Safe to leave in during development — check the browser console if
+  // questions/scores aren't showing up correctly. (Plain console.log here,
+  // not useEffect, since this runs after the early returns above and can't
+  // be a hook at this point in the component.)
+  console.log('[Step3Report] raw report:', report);
+  console.log('[Step3Report] resolved interviewData:', interviewData);
+  console.log('[Step3Report] resolved questions:', questions);
 
   const rawFinalScore = interviewData.finalScore ?? metrics.finalScore ?? interviewData.overallScore ?? metrics.overallScore ?? 0;
   const finalScore50 = normalizeTo50(rawFinalScore);
@@ -212,11 +250,19 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
           {onBack && (
             <button 
               onClick={onBack}
+              title="Go back"
               className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 rounded-full text-slate-300 transition-all"
             >
               <HiOutlineArrowLeft className="text-lg" />
             </button>
           )}
+          <button
+            onClick={() => navigate('/')}
+            title="Back to Home"
+            className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 rounded-full text-slate-300 transition-all"
+          >
+            <HiOutlineHome className="text-lg" />
+          </button>
           <div>
             <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Interview Analytics Dashboard</h1>
             <p className="text-xs text-slate-400">AI-powered performance insights</p>
@@ -322,6 +368,12 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
           <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
             <h3 className="text-sm font-bold text-slate-200">Performance Trend</h3>
 
+            {questions.length === 0 ? (
+              <div className="h-48 w-full flex flex-col items-center justify-center gap-2 text-center">
+                <p className="text-sm text-slate-500">No question-level data available for this report yet.</p>
+                <p className="text-[11px] text-slate-600">Check the browser console for the raw report shape.</p>
+              </div>
+            ) : (
             <div className="relative h-48 w-full pt-4">
               <svg className="w-full h-full overflow-visible" viewBox="0 0 500 150" preserveAspectRatio="none">
                 <line x1="0" y1="30" x2="500" y2="30" stroke="#334155" strokeDasharray="4 4" strokeWidth="1" />
@@ -370,12 +422,22 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
                 ))}
               </div>
             </div>
+            )}
           </div>
 
           {/* Card 4: Question Breakdown */}
           <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
             <h3 className="text-sm font-bold text-slate-200">Question Breakdown</h3>
 
+            {questions.length === 0 ? (
+              <div className="py-8 text-center space-y-1">
+                <p className="text-sm text-slate-500">No individual question data was found in this report.</p>
+                <p className="text-[11px] text-slate-600">
+                  This usually means the backend response for this report doesn't include a <code>questions</code> array —
+                  check the console log for the exact shape.
+                </p>
+              </div>
+            ) : (
             <div className="space-y-4">
               {questions.map((q, idx) => {
                 const questionText = q.question || q.questionText || `Question ${idx + 1}`;
@@ -448,6 +510,7 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
                 );
               })}
             </div>
+            )}
           </div>
 
         </div>
