@@ -138,6 +138,9 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
       }
     };
 
+    fetchReport();
+  }, [interviewId, initialReport]);
+
   const handleDownloadPDF = () => {
     window.print();
   };
@@ -212,11 +215,6 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
     report?.report?.questions ||
     report?.data?.report?.questions ||
     [];
-
-  // Debug logs
-  console.log('[Step3Report] raw report:', report);
-  console.log('[Step3Report] resolved interviewData:', interviewData);
-  console.log('[Step3Report] resolved questions:', questions);
 
   const rawFinalScore = interviewData.finalScore ?? metrics.finalScore ?? interviewData.overallScore ?? metrics.overallScore ?? 0;
   const finalScore50 = normalizeTo50(rawFinalScore);
@@ -379,7 +377,6 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
             {questions.length === 0 ? (
               <div className="h-48 w-full flex flex-col items-center justify-center gap-2 text-center">
                 <p className="text-sm text-slate-500">No question-level data available for this report yet.</p>
-                <p className="text-[11px] text-slate-600">Check the browser console for the raw report shape.</p>
               </div>
             ) : (
             <div className="relative h-48 w-full pt-4">
@@ -440,10 +437,6 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
             {questions.length === 0 ? (
               <div className="py-8 text-center space-y-1">
                 <p className="text-sm text-slate-500">No individual question data was found in this report.</p>
-                <p className="text-[11px] text-slate-600">
-                  This usually means the backend response for this report doesn't include a <code>questions</code> array —
-                  check the console log for the exact shape.
-                </p>
               </div>
             ) : (
             <div className="space-y-4">
