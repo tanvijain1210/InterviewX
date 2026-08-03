@@ -133,13 +133,10 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
       } catch (err) {
         console.error('Error fetching interview report:', err);
         setError('Failed to fetch the assessment report. Please try again.');
-      } font-semibold finally {
+      } finally {
         setLoading(false);
       }
     };
-
-    fetchReport();
-  }, [interviewId, initialReport]);
 
   const handleDownloadPDF = () => {
     window.print();
