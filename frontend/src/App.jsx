@@ -10,7 +10,7 @@ import Pricing from './pages/Pricing';
 import InterviewHistory from './pages/InterviewHistory'
 import InterviewReport from './pages/InterviewReport';
 
-export const serverUrl = "http://localhost:8000";
+export const serverUrl = "https://interviewx-1ee4.onrender.com";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
