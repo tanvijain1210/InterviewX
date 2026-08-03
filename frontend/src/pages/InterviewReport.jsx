@@ -235,7 +235,7 @@ function InterviewReport({ theme = 'cyan' }) {
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block print:space-y-6">
 
-          {/* LEFT COLUMN: Step 3 Report Overview & Breakdown Cards */}
+          {/* LEFT COLUMN: Overview & Breakdown Cards */}
           <div className="lg:col-span-4 space-y-5">
 
             {/* Card 1: Overall Performance Score Header Card */}
