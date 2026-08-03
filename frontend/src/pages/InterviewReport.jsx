@@ -66,6 +66,14 @@ function InterviewReport({ theme = 'cyan' }) {
     return Math.min(100, Math.max(0, Math.round((scoreOutOf50 / 50) * 100)));
   };
 
+  // Clamp/round a raw per-question metric to a clean value out of 10
+  // (used for the Question Breakdown section, which displays out of 10
+  // rather than the /50 scale used for the overall session summary).
+  const clampTo10 = (val) => {
+    const raw = Number(val) || 0;
+    return Math.min(10, Math.max(0, Math.round(raw * 10) / 10));
+  };
+
   // Dynamic score color resolver based on score out of 50
   const getScoreColorConfig = (scoreOutOf50) => {
     const val = Number(scoreOutOf50) || 0;
@@ -465,6 +473,12 @@ function InterviewReport({ theme = 'cyan' }) {
                     const qComm50 = normalizeTo50(q.communication ?? q.communicationScore);
                     const qCorr50 = normalizeTo50(q.correctness ?? q.correctnessScore);
 
+                    // Raw values out of 10 for display in the Question Breakdown section
+                    const qScore10 = clampTo10(q.score ?? q.overallScore);
+                    const qConf10 = clampTo10(q.confidence ?? q.confidenceScore);
+                    const qComm10 = clampTo10(q.communication ?? q.communicationScore);
+                    const qCorr10 = clampTo10(q.correctness ?? q.correctnessScore);
+
                     const qScoreColors = getScoreColorConfig(qScore50);
                     const qConfColors = getScoreColorConfig(qConf50);
                     const qCommColors = getScoreColorConfig(qComm50);
@@ -491,7 +505,7 @@ function InterviewReport({ theme = 'cyan' }) {
                           </div>
                           {(q.score !== undefined || q.overallScore !== undefined) && (
                             <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border shrink-0 ${qScoreColors.badgeBg}`}>
-                              {qScore50} / 50
+                              {qScore10} / 10
                             </span>
                           )}
                         </div>
@@ -501,15 +515,15 @@ function InterviewReport({ theme = 'cyan' }) {
                           <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-slate-900/80 rounded-xl border border-slate-800 text-[11px]">
                             <div className="flex items-center gap-1.5 text-slate-300">
                               <HiOutlineShieldCheck className={`${qConfColors.text} shrink-0 text-sm`} />
-                              <span>Conf: <strong className={qConfColors.text}>{qConf50}/50</strong></span>
+                              <span>Conf: <strong className={qConfColors.text}>{qConf10}/10</strong></span>
                             </div>
                             <div className="flex items-center gap-1.5 text-slate-300">
                               <HiOutlineChatAlt2 className={`${qCommColors.text} shrink-0 text-sm`} />
-                              <span>Comm: <strong className={qCommColors.text}>{qComm50}/50</strong></span>
+                              <span>Comm: <strong className={qCommColors.text}>{qComm10}/10</strong></span>
                             </div>
                             <div className="flex items-center gap-1.5 text-slate-300">
                               <HiOutlineCheckCircle className={`${qCorrColors.text} shrink-0 text-sm`} />
-                              <span>Acc: <strong className={qCorrColors.text}>{qCorr50}/50</strong></span>
+                              <span>Acc: <strong className={qCorrColors.text}>{qCorr10}/10</strong></span>
                             </div>
                           </div>
                         )}
