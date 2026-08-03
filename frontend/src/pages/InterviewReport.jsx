@@ -235,67 +235,140 @@ function InterviewReport({ theme = 'cyan' }) {
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block print:space-y-6">
 
-          {/* LEFT COLUMN: Summary & Skill Breakdown */}
-          <div className="lg:col-span-4 space-y-6">
+          {/* LEFT COLUMN: Step 3 Report Overview & Breakdown Cards */}
+          <div className="lg:col-span-4 space-y-5">
 
-            {/* Card 1: Overall Performance Score */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-200">Overall Assessment Score</h3>
-              <div className="flex items-baseline gap-2">
-                <span className={`text-5xl font-black ${finalScoreColors.text}`}>
-                  {finalScore50}
+            {/* Card 1: Overall Performance Score Header Card */}
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800/90 shadow-2xl relative overflow-hidden">
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/50">
+                  Step 3 Assessment Report
                 </span>
-                <span className="text-xl text-slate-500 font-semibold">/ 50</span>
-                <span className="ml-auto text-sm font-bold text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/50">
-                  {finalPct}%
+                <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${finalScoreColors.badgeBg}`}>
+                  {finalPct}% Overall
                 </span>
               </div>
 
-              <div className="pt-2 border-t border-slate-800/80 space-y-1">
-                <p className={`text-sm font-bold ${finalScoreColors.text}`}>
-                  {performanceFeedback.title}
-                </p>
-                <p className="text-xs text-slate-400 leading-relaxed">
+              <div className="space-y-1 mb-5">
+                <p className="text-xs font-semibold text-slate-400">Total Score</p>
+                <div className="flex items-baseline gap-2">
+                  <span className={`text-5xl font-black tracking-tight ${finalScoreColors.text}`}>
+                    {finalScore50}
+                  </span>
+                  <span className="text-lg font-bold text-slate-500">/ 50</span>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-1">
+                <div className="flex items-center gap-2">
+                  <HiOutlineShieldCheck className={`text-base ${finalScoreColors.text}`} />
+                  <p className={`text-xs font-bold ${finalScoreColors.text}`}>
+                    {performanceFeedback.title}
+                  </p>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed pl-6">
                   {performanceFeedback.subtitle}
                 </p>
               </div>
             </div>
 
-            {/* Card 2: Skill Breakdown (/ 50) */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
-              <h3 className="text-sm font-bold text-slate-200">Skill Breakdown</h3>
+            {/* Card 2: Session Metadata */}
+            <div className="p-5 rounded-3xl bg-slate-900 border border-slate-800/90 shadow-xl space-y-3.5">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider px-1">
+                Session Metadata
+              </h3>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-2.5 text-xs">
+                <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-0.5">
+                  <span className="text-[10px] text-slate-500 font-medium">Target Role</span>
+                  <p className="font-semibold text-slate-200 capitalize truncate">
+                    {interviewData.role || 'Software Engineer'}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-0.5">
+                  <span className="text-[10px] text-slate-500 font-medium">Experience</span>
+                  <p className="font-semibold text-slate-200 truncate">
+                    {interviewData.experience || 'Entry Level'}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-0.5">
+                  <span className="text-[10px] text-slate-500 font-medium">Interview Mode</span>
+                  <p className="font-semibold text-cyan-400 capitalize truncate">
+                    {interviewData.mode || 'Technical'}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-0.5">
+                  <span className="text-[10px] text-slate-500 font-medium">Questions Evaluated</span>
+                  <p className="font-semibold text-slate-200">
+                    {questions.length} Questions
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Skill & Performance Breakdown Cards */}
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800/90 shadow-xl space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  Skill Performance Metrics
+                </h3>
+                <span className="text-[10px] font-semibold text-slate-500">Out of 50</span>
+              </div>
+
+              <div className="space-y-4 pt-1">
                 {/* Confidence */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-300">Confidence</span>
-                    <span className={confColors.text}>{avgConf50} / 50</span>
+                <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <div className="flex items-center gap-2">
+                      <HiOutlineShieldCheck className={`${confColors.text} text-sm`} />
+                      <span className="font-semibold text-slate-200">Confidence & Delivery</span>
+                    </div>
+                    <span className={`font-bold ${confColors.text}`}>{avgConf50} / 50</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className={`${confColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgConf50)}%` }} />
+                  <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-0.5">
+                    <div
+                      className={`${confColors.bg} h-full rounded-full transition-all duration-500`}
+                      style={{ width: `${toPercentageFrom50(avgConf50)}%` }}
+                    />
                   </div>
                 </div>
 
                 {/* Communication */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-300">Communication</span>
-                    <span className={commColors.text}>{avgComm50} / 50</span>
+                <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <div className="flex items-center gap-2">
+                      <HiOutlineChatAlt2 className={`${commColors.text} text-sm`} />
+                      <span className="font-semibold text-slate-200">Communication Clarity</span>
+                    </div>
+                    <span className={`font-bold ${commColors.text}`}>{avgComm50} / 50</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className={`${commColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgComm50)}%` }} />
+                  <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-0.5">
+                    <div
+                      className={`${commColors.bg} h-full rounded-full transition-all duration-500`}
+                      style={{ width: `${toPercentageFrom50(avgComm50)}%` }}
+                    />
                   </div>
                 </div>
 
-                {/* Correctness */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-300">Correctness</span>
-                    <span className={corrColors.text}>{avgCorr50} / 50</span>
+                {/* Technical Accuracy */}
+                <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <div className="flex items-center gap-2">
+                      <HiOutlineCheckCircle className={`${corrColors.text} text-sm`} />
+                      <span className="font-semibold text-slate-200">Technical Accuracy</span>
+                    </div>
+                    <span className={`font-bold ${corrColors.text}`}>{avgCorr50} / 50</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className={`${corrColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgCorr50)}%` }} />
+                  <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-0.5">
+                    <div
+                      className={`${corrColors.bg} h-full rounded-full transition-all duration-500`}
+                      style={{ width: `${toPercentageFrom50(avgCorr50)}%` }}
+                    />
                   </div>
                 </div>
               </div>
@@ -306,9 +379,11 @@ function InterviewReport({ theme = 'cyan' }) {
           {/* RIGHT COLUMN: Performance Trend & Question Breakdown */}
           <div className="lg:col-span-8 space-y-6">
 
-            {/* Card 3: Performance Trend Chart (Out of 50) */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-200">Performance Trend</h3>
+            {/* Performance Trend Chart */}
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800/90 shadow-xl space-y-4">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Performance Trend
+              </h3>
 
               <div className="relative h-48 w-full pt-4">
                 <svg className="w-full h-full overflow-visible" viewBox="0 0 500 150" preserveAspectRatio="none">
@@ -370,9 +445,11 @@ function InterviewReport({ theme = 'cyan' }) {
               </div>
             </div>
 
-            {/* Card 4: Question Breakdown */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-200">Question Breakdown</h3>
+            {/* Question Breakdown */}
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800/90 shadow-xl space-y-4">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Question Breakdown
+              </h3>
 
               <div className="space-y-4">
                 {questions.length === 0 ? (
@@ -401,7 +478,7 @@ function InterviewReport({ theme = 'cyan' }) {
                         transition={{ delay: idx * 0.05 }}
                         className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-3"
                       >
-                        {/* Question Header & Score Badge (/ 50) */}
+                        {/* Header & Score Badge */}
                         <div className="flex justify-between items-start gap-3">
                           <div className="space-y-1">
                             <p className="text-xs font-semibold text-slate-400">Question {idx + 1}</p>
@@ -419,7 +496,7 @@ function InterviewReport({ theme = 'cyan' }) {
                           )}
                         </div>
 
-                        {/* Per-Question Sub-Metrics Grid (/ 50) */}
+                        {/* Per-Question Sub-Metrics Grid */}
                         {(q.confidence !== undefined || q.communication !== undefined || q.correctness !== undefined) && (
                           <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-slate-900/80 rounded-xl border border-slate-800 text-[11px]">
                             <div className="flex items-center gap-1.5 text-slate-300">
@@ -449,7 +526,7 @@ function InterviewReport({ theme = 'cyan' }) {
                           </p>
                         </div>
 
-                        {/* AI Feedback / Ideal Answer Box */}
+                        {/* AI Feedback Box */}
                         <div className={`p-4 rounded-xl border space-y-1 ${currentTheme.boxBg}`}>
                           <span className={`text-[11px] font-bold block ${currentTheme.accent}`}>
                             {q.feedback ? "AI Feedback" : "Ideal Answer"}
