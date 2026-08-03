@@ -133,7 +133,7 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
       } catch (err) {
         console.error('Error fetching interview report:', err);
         setError('Failed to fetch the assessment report. Please try again.');
-      } finally {
+      } font-semibold finally {
         setLoading(false);
       }
     };
@@ -190,19 +190,33 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
     );
   }
 
-  // Normalization
-  // Try several likely shapes since the exact response format from
-  // /api/interview/generate-report isn't fully confirmed yet.
+  // Normalization & Safe extraction across all potential nested structures
   const interviewData =
-    report.interview || report.data?.interview || report.data?.data?.interview || report.data || report;
-  const metrics = report.metrics || report.data?.metrics || report.data?.data?.metrics || {};
-  const questions = interviewData.questions || report.questions || report.data?.questions || [];
+    report.interview || 
+    report.data?.interview || 
+    report.data?.data?.interview || 
+    report.report?.interview || 
+    report.data || 
+    report;
 
-  // Debug: log the raw shapes so we can see exactly what the backend sent.
-  // Safe to leave in during development — check the browser console if
-  // questions/scores aren't showing up correctly. (Plain console.log here,
-  // not useEffect, since this runs after the early returns above and can't
-  // be a hook at this point in the component.)
+  const metrics = 
+    report.metrics || 
+    report.data?.metrics || 
+    report.data?.data?.metrics || 
+    report.report?.metrics || 
+    {};
+
+  // Robust multi-path lookup for the questions array
+  const questions =
+    interviewData?.questions ||
+    report?.questions ||
+    report?.data?.questions ||
+    report?.data?.data?.questions ||
+    report?.report?.questions ||
+    report?.data?.report?.questions ||
+    [];
+
+  // Debug logs
   console.log('[Step3Report] raw report:', report);
   console.log('[Step3Report] resolved interviewData:', interviewData);
   console.log('[Step3Report] resolved questions:', questions);
@@ -212,9 +226,6 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
   const finalPct = toPercentageFrom50(finalScore50);
 
   // Averages a raw per-question metric (0-10 scale) across all questions.
-  // The backend doesn't currently send avgConfidence/avgCommunication/
-  // avgCorrectness, so this computes them client-side from the same
-  // per-question data that powers the Question Breakdown section below.
   const averageQuestionMetric = (key, altKey) => {
     if (!questions.length) return 0;
     const total = questions.reduce((sum, q) => {
@@ -280,7 +291,7 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block print:space-y-6">
 
-        {/* LEFT COLUMN: Adapted from InterviewReport (50-point score system) */}
+        {/* LEFT COLUMN: 50-point score system */}
         <div className="lg:col-span-4 space-y-6">
           
           {/* Card 1: Overall Score Gauge (/ 50) */}
@@ -361,7 +372,7 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
 
         </div>
 
-        {/* RIGHT COLUMN: Retained original Step3Report Trend Graph & Question Breakdown */}
+        {/* RIGHT COLUMN: Trend Graph & Question Breakdown */}
         <div className="lg:col-span-8 space-y-6">
 
           {/* Card 3: Performance Trend Chart */}
@@ -441,12 +452,12 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
             <div className="space-y-4">
               {questions.map((q, idx) => {
                 const questionText = q.question || q.questionText || `Question ${idx + 1}`;
-                const answerText = q.answer || q.userAnswer;
-                const feedbackText = q.feedback || q.idealAnswer;
+                const answerText = q.answer || q.userAnswer || q.userResponse;
+                const feedbackText = q.feedback || q.aiFeedback || q.idealAnswer;
                 const qScore = q.score ?? q.overallScore;
-                const qConf = q.confidence ?? q.confidenceScore;
-                const qComm = q.communication ?? q.communicationScore;
-                const qCorr = q.correctness ?? q.correctnessScore;
+                const qConf = q.confidence ?? q.confidenceScore ?? q.conf;
+                const qComm = q.communication ?? q.communicationScore ?? q.comm;
+                const qCorr = q.correctness ?? q.correctnessScore ?? q.acc;
 
                 return (
                   <motion.div
