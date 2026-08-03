@@ -49,6 +49,58 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
 
   const currentTheme = themeStyles[theme] || themeStyles.cyan;
 
+  // Utility to scale a score into a score out of 50
+  const normalizeTo50 = (val) => {
+    const raw = Number(val) || 0;
+    const score = raw > 10 ? raw : raw * 5;
+    return Math.min(50, Math.max(0, Math.round(score * 10) / 10));
+  };
+
+  // Convert a score out of 50 to a percentage (0 - 100%)
+  const toPercentageFrom50 = (scoreOutOf50) => {
+    return Math.min(100, Math.max(0, Math.round((scoreOutOf50 / 50) * 100)));
+  };
+
+  // Dynamic score color resolver based on score out of 50
+  const getScoreColorConfig = (scoreOutOf50) => {
+    const val = Number(scoreOutOf50) || 0;
+    if (val >= 40) {
+      return {
+        text: 'text-emerald-400',
+        bg: 'bg-emerald-500',
+        border: 'border-emerald-800/80',
+        badgeBg: 'bg-emerald-950/80 text-emerald-400 border-emerald-800/80',
+        stroke: '#34d399',
+      };
+    }
+    if (val >= 25) {
+      return {
+        text: 'text-amber-400',
+        bg: 'bg-amber-500',
+        border: 'border-amber-800/80',
+        badgeBg: 'bg-amber-950/80 text-amber-400 border-amber-800/80',
+        stroke: '#fbbf24',
+      };
+    }
+    return {
+      text: 'text-rose-400',
+      bg: 'bg-rose-500',
+      border: 'border-rose-800/80',
+      badgeBg: 'bg-rose-950/80 text-rose-400 border-rose-800/80',
+      stroke: '#f43f5e',
+    };
+  };
+
+  // Dynamic performance evaluation label based on score out of 50
+  const getPerformanceEvaluation = (scoreOutOf50) => {
+    const score = Number(scoreOutOf50) || 0;
+    if (score >= 45) return { title: 'Exceptional Mastery!', subtitle: 'Outstanding accuracy, clarity, and structural depth throughout.' };
+    if (score >= 40) return { title: 'Excellent Performance!', subtitle: 'Consistently strong answers with minor refinement areas.' };
+    if (score >= 35) return { title: 'Good Performance', subtitle: 'Solid core knowledge shown, work on providing deeper examples.' };
+    if (score >= 25) return { title: 'Average Performance', subtitle: 'Basic understanding demonstrated. Practice clarity and timing.' };
+    return { title: 'Needs Improvement', subtitle: 'Re-evaluate fundamental concepts and re-attempt practice sessions.' };
+  };
+
   useEffect(() => {
     if (initialReport) {
       setReport(initialReport);
@@ -116,22 +168,21 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
   const interviewData = report.interview || report.data?.interview || report;
   const metrics = report.metrics || report.data?.metrics || {};
   const questions = interviewData.questions || report.questions || [];
-  
+
   const rawFinalScore = interviewData.finalScore ?? metrics.finalScore ?? interviewData.overallScore ?? metrics.overallScore ?? 0;
-  const finalScore = Number(rawFinalScore).toFixed(1);
+  const finalScore50 = normalizeTo50(rawFinalScore);
+  const finalPct = toPercentageFrom50(finalScore50);
 
-  const avgConf = metrics.avgConfidence ?? interviewData.avgConfidence ?? 0;
-  const avgComm = metrics.avgCommunication ?? interviewData.avgCommunication ?? 0;
-  const avgCorr = metrics.avgCorrectness ?? interviewData.avgCorrectness ?? 0;
+  const avgConf50 = normalizeTo50(metrics.avgConfidence ?? interviewData.avgConfidence);
+  const avgComm50 = normalizeTo50(metrics.avgCommunication ?? interviewData.avgCommunication);
+  const avgCorr50 = normalizeTo50(metrics.avgCorrectness ?? interviewData.avgCorrectness);
 
-  const getFeedbackLabel = (score) => {
-    const val = Number(score);
-    if (val >= 8) return { title: 'Excellent performance!', subtitle: 'Consistently strong responses.' };
-    if (val >= 6) return { title: 'Solid performance.', subtitle: 'Minor areas for improvement.' };
-    return { title: 'Significant improvement required.', subtitle: 'Work on clarity and confidence.' };
-  };
+  const finalScoreColors = getScoreColorConfig(finalScore50);
+  const confColors = getScoreColorConfig(avgConf50);
+  const commColors = getScoreColorConfig(avgComm50);
+  const corrColors = getScoreColorConfig(avgCorr50);
 
-  const feedbackInfo = getFeedbackLabel(finalScore);
+  const performanceFeedback = getPerformanceEvaluation(finalScore50);
 
   return (
     <div className="w-full space-y-6 text-slate-100 font-sans">
@@ -164,12 +215,12 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block print:space-y-6">
 
-        {/* LEFT COLUMN: Overall Performance & Skill Evaluation */}
+        {/* LEFT COLUMN: Adapted from InterviewReport (50-point score system) */}
         <div className="lg:col-span-4 space-y-6">
           
-          {/* Card 1: Overall Performance Gauge */}
+          {/* Card 1: Overall Score Gauge (/ 50) */}
           <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col items-center text-center space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Overall Performance</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Overall Score</h3>
             
             {/* SVG Circular Gauge */}
             <div className="relative w-36 h-36 flex items-center justify-center">
@@ -182,8 +233,8 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 />
                 <path
-                  className={`${currentTheme.accent} transition-all duration-1000 ease-out`}
-                  strokeDasharray={`${(finalScore / 10) * 100}, 100`}
+                  className={`${finalScoreColors.text} transition-all duration-1000 ease-out`}
+                  strokeDasharray={`${finalPct}, 100`}
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   stroke="currentColor"
@@ -192,30 +243,30 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
                 />
               </svg>
               <div className="absolute flex flex-col items-center">
-                <span className={`text-3xl font-extrabold ${currentTheme.accent}`}>{finalScore}</span>
-                <span className="text-[10px] text-slate-500 font-medium">Out of 10</span>
+                <span className={`text-2xl font-extrabold ${finalScoreColors.text}`}>{finalScore50} / 50</span>
+                <span className="text-[10px] text-slate-500 font-medium">{finalPct}% Overall</span>
               </div>
             </div>
 
             <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-200">{feedbackInfo.title}</p>
-              <p className="text-xs text-slate-400">{feedbackInfo.subtitle}</p>
+              <p className="text-sm font-bold text-slate-200">{performanceFeedback.title}</p>
+              <p className="text-xs text-slate-400">{performanceFeedback.subtitle}</p>
             </div>
           </div>
 
-          {/* Card 2: Skill Evaluation */}
+          {/* Card 2: Skill Breakdown (/ 50) */}
           <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
-            <h3 className="text-sm font-bold text-slate-200">Skill Evaluation</h3>
+            <h3 className="text-sm font-bold text-slate-200">Skill Breakdown</h3>
 
             <div className="space-y-4">
               {/* Confidence */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
                   <span className="text-slate-300">Confidence</span>
-                  <span className={currentTheme.accent}>{Number(avgConf).toFixed(1)}</span>
+                  <span className={confColors.text}>{avgConf50} / 50</span>
                 </div>
                 <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className={`${currentTheme.accentBg} h-full rounded-full transition-all duration-500`} style={{ width: `${(avgConf / 10) * 100}%` }} />
+                  <div className={`${confColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgConf50)}%` }} />
                 </div>
               </div>
 
@@ -223,10 +274,10 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
                   <span className="text-slate-300">Communication</span>
-                  <span className={currentTheme.accent}>{Number(avgComm).toFixed(1)}</span>
+                  <span className={commColors.text}>{avgComm50} / 50</span>
                 </div>
                 <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className={`${currentTheme.accentBg} h-full rounded-full transition-all duration-500`} style={{ width: `${(avgComm / 10) * 100}%` }} />
+                  <div className={`${commColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgComm50)}%` }} />
                 </div>
               </div>
 
@@ -234,10 +285,10 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
                   <span className="text-slate-300">Correctness</span>
-                  <span className={currentTheme.accent}>{Number(avgCorr).toFixed(1)}</span>
+                  <span className={corrColors.text}>{avgCorr50} / 50</span>
                 </div>
                 <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className={`${currentTheme.accentBg} h-full rounded-full transition-all duration-500`} style={{ width: `${(avgCorr / 10) * 100}%` }} />
+                  <div className={`${corrColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgCorr50)}%` }} />
                 </div>
               </div>
             </div>
@@ -245,7 +296,7 @@ function Step3Report({ interviewId, report: initialReport, onBack, theme = 'cyan
 
         </div>
 
-        {/* RIGHT COLUMN: Performance Trend & Question Breakdown */}
+        {/* RIGHT COLUMN: Retained original Step3Report Trend Graph & Question Breakdown */}
         <div className="lg:col-span-8 space-y-6">
 
           {/* Card 3: Performance Trend Chart */}

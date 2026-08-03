@@ -236,84 +236,45 @@ function InterviewReport({ theme = 'cyan' }) {
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block print:space-y-6">
 
-          {/* LEFT COLUMN: Overall Performance & Skill Evaluation */}
-          <div className="lg:col-span-4 space-y-6">
+      {/* Card 2: Skill Breakdown (/ 50) */}
+          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
+            <h3 className="text-sm font-bold text-slate-200">Skill Breakdown</h3>
 
-            {/* Card 1: Overall Performance Gauge (Score / 50) */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col items-center text-center space-y-4">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Overall Score</h3>
-
-              {/* SVG Circular Gauge */}
-              <div className="relative w-36 h-36 flex items-center justify-center">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    className="text-slate-800"
-                    strokeWidth="3.5"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-                    className={`${finalScoreColors.text} transition-all duration-1000 ease-out`}
-                    strokeDasharray={`${finalPct}, 100`}
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-                <div className="absolute flex flex-col items-center">
-                  <span className={`text-2xl font-extrabold ${finalScoreColors.text}`}>{finalScore50} / 50</span>
-                  <span className="text-[10px] text-slate-500 font-medium">{finalPct}% Overall</span>
+            <div className="space-y-4">
+              {/* Confidence */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-300">Confidence</span>
+                  <span className={confColors.text}>{avgConf50} / 50</span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className={`${confColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgConf50)}%` }} />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-slate-200">{performanceFeedback.title}</p>
-                <p className="text-xs text-slate-400">{performanceFeedback.subtitle}</p>
+              {/* Communication */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-300">Communication</span>
+                  <span className={commColors.text}>{avgComm50} / 50</span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className={`${commColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgComm50)}%` }} />
+                </div>
               </div>
-            </div>
 
-            {/* Card 2: Skill Evaluation */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
-              <h3 className="text-sm font-bold text-slate-200">Skill Breakdown</h3>
-
-              <div className="space-y-4">
-                {/* Confidence */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-300">Confidence</span>
-                    <span className={confColors.text}>{avgConf50} / 50</span>
-                  </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className={`${confColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgConf50)}%` }} />
-                  </div>
+              {/* Correctness */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-300">Correctness</span>
+                  <span className={corrColors.text}>{avgCorr50} / 50</span>
                 </div>
-
-                {/* Communication */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-300">Communication</span>
-                    <span className={commColors.text}>{avgComm50} / 50</span>
-                  </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className={`${commColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgComm50)}%` }} />
-                  </div>
-                </div>
-
-                {/* Correctness */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-300">Correctness</span>
-                    <span className={corrColors.text}>{avgCorr50} / 50</span>
-                  </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className={`${corrColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgCorr50)}%` }} />
-                  </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className={`${corrColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgCorr50)}%` }} />
                 </div>
               </div>
             </div>
+          </div>
 
           </div>
 
