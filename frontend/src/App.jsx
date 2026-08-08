@@ -60,7 +60,7 @@ export default function App() {
   // Loading Screen Spinner
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-slate-950 flex flex-col items-center justify-center text-slate-100 font-sans">
+      <div className="min-h-screen w-full bg-white-950 flex flex-col items-center justify-center text-slate-100 font-sans">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin" />
           <p className="text-sm font-medium text-slate-400">Verifying Session...</p>
