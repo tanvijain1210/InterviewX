@@ -31,31 +31,31 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
   // Dynamic Theme Palette Map
   const themeStyles = {
     cyan: {
-      accent: 'text-cyan-400',
-      accentBg: 'bg-cyan-400',
-      accentBorder: 'border-cyan-800/80',
-      btnBg: 'bg-cyan-600 hover:bg-cyan-500 shadow-cyan-950/50',
-      boxBg: 'bg-cyan-950/20 border-cyan-900/40',
+      accent: 'text-cyan-600',
+      accentBg: 'bg-cyan-600',
+      accentBorder: 'border-cyan-200',
+      btnBg: 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-500/25',
+      boxBg: 'bg-cyan-50 border-cyan-200',
       gradientStop: '#0891b2',
-      lineStroke: '#22d3ee',
+      lineStroke: '#0891b2',
     },
     emerald: {
-      accent: 'text-emerald-400',
-      accentBg: 'bg-emerald-400',
-      accentBorder: 'border-emerald-800/80',
-      btnBg: 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-950/50',
-      boxBg: 'bg-emerald-950/20 border-emerald-900/40',
+      accent: 'text-emerald-600',
+      accentBg: 'bg-emerald-600',
+      accentBorder: 'border-emerald-200',
+      btnBg: 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/25',
+      boxBg: 'bg-emerald-50 border-emerald-200',
       gradientStop: '#059669',
-      lineStroke: '#34d399',
+      lineStroke: '#059669',
     },
     indigo: {
-      accent: 'text-indigo-400',
-      accentBg: 'bg-indigo-400',
-      accentBorder: 'border-indigo-800/80',
-      btnBg: 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-950/50',
-      boxBg: 'bg-indigo-950/20 border-indigo-900/40',
+      accent: 'text-indigo-600',
+      accentBg: 'bg-indigo-600',
+      accentBorder: 'border-indigo-200',
+      btnBg: 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/25',
+      boxBg: 'bg-indigo-50 border-indigo-200',
       gradientStop: '#4f46e5',
-      lineStroke: '#818cf8',
+      lineStroke: '#4f46e5',
     }
   };
 
@@ -78,28 +78,28 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
     const val = Number(scoreOutOf50) || 0;
     if (val >= 40) {
       return {
-        text: 'text-emerald-400',
+        text: 'text-emerald-600',
         bg: 'bg-emerald-500',
-        border: 'border-emerald-800/80',
-        badgeBg: 'bg-emerald-950/80 text-emerald-400 border-emerald-800/80',
-        stroke: '#34d399',
+        border: 'border-emerald-200',
+        badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        stroke: '#059669',
       };
     }
     if (val >= 25) {
       return {
-        text: 'text-amber-400',
+        text: 'text-amber-600',
         bg: 'bg-amber-500',
-        border: 'border-amber-800/80',
-        badgeBg: 'bg-amber-950/80 text-amber-400 border-amber-800/80',
-        stroke: '#fbbf24',
+        border: 'border-amber-200',
+        badgeBg: 'bg-amber-50 text-amber-700 border-amber-200',
+        stroke: '#d97706',
       };
     }
     return {
-      text: 'text-rose-400',
+      text: 'text-rose-600',
       bg: 'bg-rose-500',
-      border: 'border-rose-800/80',
-      badgeBg: 'bg-rose-950/80 text-rose-400 border-rose-800/80',
-      stroke: '#f43f5e',
+      border: 'border-rose-200',
+      badgeBg: 'bg-rose-50 text-rose-700 border-rose-200',
+      stroke: '#e11d48',
     };
   };
 
@@ -147,27 +147,27 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
 
   if (loading) {
     return (
-      <div className="min-h-[400px] w-full flex flex-col items-center justify-center space-y-4 bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 text-slate-300 p-8 shadow-2xl">
-        <div className="w-12 h-12 border-4 border-slate-800 border-t-cyan-400 rounded-full animate-spin" />
-        <p className="text-sm font-semibold tracking-wide text-slate-300">Generating Assessment Report...</p>
+      <div className="min-h-[400px] w-full flex flex-col items-center justify-center space-y-4 bg-white backdrop-blur-xl rounded-3xl border border-slate-200 text-slate-600 p-8 shadow-xl shadow-slate-200/50">
+        <div className="w-12 h-12 border-4 border-slate-200 border-t-cyan-600 rounded-full animate-spin" />
+        <p className="text-sm font-semibold tracking-wide text-slate-600">Generating Assessment Report...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-8 text-center bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 text-slate-300 space-y-4 shadow-2xl">
-        <p className="text-rose-400 font-medium">{error}</p>
+      <div className="p-8 text-center bg-white backdrop-blur-xl rounded-3xl border border-slate-200 text-slate-600 space-y-4 shadow-xl shadow-slate-200/50">
+        <p className="text-rose-600 font-medium">{error}</p>
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={() => navigate('/')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl text-xs font-semibold transition-all shadow-lg"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-xl text-xs font-semibold transition-all shadow-sm"
           >
             <HiOutlineHome className="text-base" /> Back to Home
           </button>
           <button
             onClick={() => window.location.reload()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition-all shadow-lg"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all shadow-sm"
           >
             <HiOutlineRefresh className="text-base" /> Retry Loading
           </button>
@@ -178,11 +178,11 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
 
   if (!report) {
     return (
-      <div className="p-8 text-center bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-800 text-slate-400 space-y-4">
+      <div className="p-8 text-center bg-white backdrop-blur-xl rounded-3xl border border-slate-200 text-slate-500 space-y-4">
         <p>No assessment report data available.</p>
         <button
           onClick={() => navigate('/')}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl text-xs font-semibold transition-all shadow-lg mx-auto"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-xl text-xs font-semibold transition-all shadow-sm mx-auto"
         >
           <HiOutlineHome className="text-base" /> Back to Home
         </button>
@@ -248,7 +248,7 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
   const performanceFeedback = getPerformanceEvaluation(finalScore50);
 
   return (
-    <div className="w-full space-y-6 text-slate-100 font-sans">
+    <div className="w-full space-y-6 text-slate-800 font-sans">
       
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 print:hidden">
@@ -257,7 +257,7 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
             <button 
               onClick={onBack}
               title="Go back"
-              className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 rounded-full text-slate-300 transition-all"
+              className="p-2 bg-white border border-slate-200 hover:bg-slate-100 rounded-full text-slate-600 transition-all shadow-sm"
             >
               <HiOutlineArrowLeft className="text-lg" />
             </button>
@@ -265,13 +265,13 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
           <button
             onClick={() => navigate('/')}
             title="Back to Home"
-            className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 rounded-full text-slate-300 transition-all"
+            className="p-2 bg-white border border-slate-200 hover:bg-slate-100 rounded-full text-slate-600 transition-all shadow-sm"
           >
             <HiOutlineHome className="text-lg" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Interview Analytics Dashboard</h1>
-            <p className="text-xs text-slate-400">AI-powered performance insights</p>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Interview Analytics Dashboard</h1>
+            <p className="text-xs text-slate-500">AI-powered performance insights</p>
           </div>
         </div>
 
@@ -290,14 +290,14 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
         <div className="lg:col-span-4 space-y-6">
           
           {/* Card 1: Overall Score Gauge (/ 50) */}
-          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col items-center text-center space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Overall Score</h3>
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-200/50 flex flex-col items-center text-center space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">Overall Score</h3>
             
             {/* SVG Circular Gauge */}
             <div className="relative w-36 h-36 flex items-center justify-center">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                 <path
-                  className="text-slate-800"
+                  className="text-slate-200"
                   strokeWidth="3.5"
                   stroke="currentColor"
                   fill="none"
@@ -320,23 +320,23 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
             </div>
 
             <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-200">{performanceFeedback.title}</p>
-              <p className="text-xs text-slate-400">{performanceFeedback.subtitle}</p>
+              <p className="text-sm font-bold text-slate-800">{performanceFeedback.title}</p>
+              <p className="text-xs text-slate-500">{performanceFeedback.subtitle}</p>
             </div>
           </div>
 
           {/* Card 2: Skill Breakdown (/ 50) */}
-          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-5">
-            <h3 className="text-sm font-bold text-slate-200">Skill Breakdown</h3>
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-200/50 space-y-5">
+            <h3 className="text-sm font-bold text-slate-800">Skill Breakdown</h3>
 
             <div className="space-y-4">
               {/* Confidence */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-300">Confidence</span>
+                  <span className="text-slate-600">Confidence</span>
                   <span className={confColors.text}>{avgConf50} / 50</span>
                 </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                   <div className={`${confColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgConf50)}%` }} />
                 </div>
               </div>
@@ -344,10 +344,10 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
               {/* Communication */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-300">Communication</span>
+                  <span className="text-slate-600">Communication</span>
                   <span className={commColors.text}>{avgComm50} / 50</span>
                 </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                   <div className={`${commColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgComm50)}%` }} />
                 </div>
               </div>
@@ -355,10 +355,10 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
               {/* Correctness */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-300">Correctness</span>
+                  <span className="text-slate-600">Correctness</span>
                   <span className={corrColors.text}>{avgCorr50} / 50</span>
                 </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                   <div className={`${corrColors.bg} h-full rounded-full transition-all duration-500`} style={{ width: `${toPercentageFrom50(avgCorr50)}%` }} />
                 </div>
               </div>
@@ -371,8 +371,8 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
         <div className="lg:col-span-8 space-y-6">
 
           {/* Card 3: Performance Trend Chart */}
-          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
-            <h3 className="text-sm font-bold text-slate-200">Performance Trend</h3>
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-200/50 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800">Performance Trend</h3>
 
             {questions.length === 0 ? (
               <div className="h-48 w-full flex flex-col items-center justify-center gap-2 text-center">
@@ -381,13 +381,13 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
             ) : (
             <div className="relative h-48 w-full pt-4">
               <svg className="w-full h-full overflow-visible" viewBox="0 0 500 150" preserveAspectRatio="none">
-                <line x1="0" y1="30" x2="500" y2="30" stroke="#334155" strokeDasharray="4 4" strokeWidth="1" />
-                <line x1="0" y1="80" x2="500" y2="80" stroke="#334155" strokeDasharray="4 4" strokeWidth="1" />
-                <line x1="0" y1="130" x2="500" y2="130" stroke="#334155" strokeDasharray="4 4" strokeWidth="1" />
+                <line x1="0" y1="30" x2="500" y2="30" stroke="#e2e8f0" strokeDasharray="4 4" strokeWidth="1" />
+                <line x1="0" y1="80" x2="500" y2="80" stroke="#e2e8f0" strokeDasharray="4 4" strokeWidth="1" />
+                <line x1="0" y1="130" x2="500" y2="130" stroke="#e2e8f0" strokeDasharray="4 4" strokeWidth="1" />
 
-                <text x="5" y="25" fill="#94a3b8" fontSize="10">10</text>
-                <text x="5" y="75" fill="#94a3b8" fontSize="10">5</text>
-                <text x="5" y="125" fill="#94a3b8" fontSize="10">0</text>
+                <text x="5" y="25" fill="#64748b" fontSize="10">10</text>
+                <text x="5" y="75" fill="#64748b" fontSize="10">5</text>
+                <text x="5" y="125" fill="#64748b" fontSize="10">0</text>
 
                 <defs>
                   <linearGradient id="themeGradient" x1="0" y1="0" x2="0" y2="1">
@@ -421,7 +421,7 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
                 })()}
               </svg>
 
-              <div className="flex justify-between text-[11px] text-slate-400 px-6 pt-2">
+              <div className="flex justify-between text-[11px] text-slate-500 px-6 pt-2">
                 {questions.map((_, i) => (
                   <span key={i}>Q{i + 1}</span>
                 ))}
@@ -431,8 +431,8 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
           </div>
 
           {/* Card 4: Question Breakdown */}
-          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
-            <h3 className="text-sm font-bold text-slate-200">Question Breakdown</h3>
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-200/50 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800">Question Breakdown</h3>
 
             {questions.length === 0 ? (
               <div className="py-8 text-center space-y-1">
@@ -455,16 +455,16 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-3"
+                    className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3"
                   >
                     {/* Question Title & Score */}
                     <div className="flex justify-between items-start gap-3">
                       <div>
-                        <p className="text-xs font-semibold text-slate-400">Question {idx + 1}</p>
-                        <h4 className="text-sm font-bold text-slate-100 mt-0.5">{questionText}</h4>
+                        <p className="text-xs font-semibold text-slate-500">Question {idx + 1}</p>
+                        <h4 className="text-sm font-bold text-slate-900 mt-0.5">{questionText}</h4>
                       </div>
                       {qScore !== undefined && qScore !== null && (
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border bg-slate-900 border-slate-700 ${currentTheme.accent}`}>
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border bg-white border-slate-200 ${currentTheme.accent}`}>
                           {qScore} / 10
                         </span>
                       )}
@@ -472,26 +472,26 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
 
                     {/* Sub-Metrics Badges (Confidence, Communication, Correctness) */}
                     {(qConf !== undefined || qComm !== undefined || qCorr !== undefined) && (
-                      <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-slate-900/80 rounded-xl border border-slate-800 text-[11px]">
-                        <div className="flex items-center gap-1.5 text-slate-300">
+                      <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-white rounded-xl border border-slate-200 text-[11px]">
+                        <div className="flex items-center gap-1.5 text-slate-600">
                           <HiOutlineShieldCheck className={`${currentTheme.accent} shrink-0`} />
-                          <span>Conf: <strong className="text-slate-100">{qConf ?? '—'}/10</strong></span>
+                          <span>Conf: <strong className="text-slate-900">{qConf ?? '—'}/10</strong></span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-slate-300">
+                        <div className="flex items-center gap-1.5 text-slate-600">
                           <HiOutlineChatAlt2 className={`${currentTheme.accent} shrink-0`} />
-                          <span>Comm: <strong className="text-slate-100">{qComm ?? '—'}/10</strong></span>
+                          <span>Comm: <strong className="text-slate-900">{qComm ?? '—'}/10</strong></span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-slate-300">
+                        <div className="flex items-center gap-1.5 text-slate-600">
                           <HiOutlineCheckCircle className={`${currentTheme.accent} shrink-0`} />
-                          <span>Acc: <strong className="text-slate-100">{qCorr ?? '—'}/10</strong></span>
+                          <span>Acc: <strong className="text-slate-900">{qCorr ?? '—'}/10</strong></span>
                         </div>
                       </div>
                     )}
 
                     {/* Recorded User Answer */}
-                    <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800/80 space-y-1">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Your Response</span>
-                      <p className="text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
+                    <div className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-1">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Your Response</span>
+                      <p className="text-xs text-slate-800 leading-relaxed whitespace-pre-wrap">
                         {answerText && answerText.trim().length > 0 ? (
                           answerText
                         ) : (
@@ -503,7 +503,7 @@ function Step3Report({ interviewId: interviewIdProp, report: initialReport, onBa
                     {/* AI Feedback Box */}
                     <div className={`p-4 rounded-xl border space-y-1 ${currentTheme.boxBg}`}>
                       <span className={`text-[11px] font-bold block ${currentTheme.accent}`}>AI Feedback</span>
-                      <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
                         {feedbackText || (answerText ? "Good effort. Try adding clearer structure and direct examples." : "You did not submit an answer.")}
                       </p>
                     </div>
