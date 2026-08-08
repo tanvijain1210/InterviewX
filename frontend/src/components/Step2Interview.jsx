@@ -432,25 +432,25 @@ function Step2Interview({ interviewData, onFinish }) {
 
   // Timer style helper
   const getTimerStyles = () => {
-    if (timeLeft > 20) return 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400';
-    if (timeLeft > 10) return 'border-amber-500/30 bg-amber-500/10 text-amber-400';
-    return 'border-rose-500/30 bg-rose-500/10 text-rose-400 animate-pulse';
+    if (timeLeft > 20) return 'border-cyan-200 bg-cyan-50 text-cyan-600';
+    if (timeLeft > 10) return 'border-amber-200 bg-amber-50 text-amber-600';
+    return 'border-rose-200 bg-rose-50 text-rose-600 animate-pulse';
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] w-full flex items-center justify-center p-4 md:p-8 bg-slate-950 text-slate-100">
+    <div className="min-h-[calc(100vh-80px)] w-full flex items-center justify-center p-4 md:p-8 bg-slate-50 text-slate-800">
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-[320px_1fr] gap-6 items-start">
 
         {/* LEFT SECTION — AI Speaking Panel */}
-        <div className="md:sticky md:top-8 p-6 rounded-3xl bg-slate-900/80 border border-slate-800 backdrop-blur-md shadow-2xl flex flex-col items-center text-center gap-5">
+        <div className="md:sticky md:top-8 p-6 rounded-3xl bg-white border border-slate-200 backdrop-blur-md shadow-xl shadow-slate-200/50 flex flex-col items-center text-center gap-5">
           <div className="relative w-24 h-24 flex items-center justify-center">
             <div
               className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${
-                isSpeaking ? 'bg-cyan-500/50 scale-125' : isListening ? 'bg-rose-500/30 scale-110' : 'bg-cyan-500/10 scale-100'
+                isSpeaking ? 'bg-cyan-500/50 scale-125' : isListening ? 'bg-rose-500/30 scale-110' : 'bg-cyan-50 scale-100'
               }`}
             />
             <div
-              className={`relative w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl text-white shadow-lg shadow-cyan-500/30 transition-transform duration-300 ${
+              className={`relative w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 via-teal-500 to-blue-600 flex items-center justify-center text-2xl text-white shadow-lg shadow-cyan-500/25 transition-transform duration-300 ${
                 isSpeaking ? 'scale-105' : 'scale-100'
               }`}
             >
@@ -459,10 +459,10 @@ function Step2Interview({ interviewData, onFinish }) {
           </div>
 
           <div className="space-y-1">
-            <p className="text-sm font-bold text-slate-100">AI Interviewer</p>
+            <p className="text-sm font-bold text-slate-900">AI Interviewer</p>
             <p
               className={`text-xs font-semibold uppercase tracking-wide ${
-                isSpeaking ? 'text-cyan-400' : isListening ? 'text-rose-400' : 'text-slate-500'
+                isSpeaking ? 'text-cyan-600' : isListening ? 'text-rose-600' : 'text-slate-500'
               }`}
             >
               {isSpeaking
@@ -483,7 +483,7 @@ function Step2Interview({ interviewData, onFinish }) {
               <motion.span
                 key={i}
                 className={`w-1.5 rounded-full ${
-                  isSpeaking ? 'bg-cyan-400' : isListening ? 'bg-rose-400' : 'bg-slate-700'
+                  isSpeaking ? 'bg-cyan-400' : isListening ? 'bg-rose-400' : 'bg-slate-300'
                 }`}
                 initial={{ height: '18%' }}
                 animate={
@@ -507,8 +507,8 @@ function Step2Interview({ interviewData, onFinish }) {
           </p>
 
           {isGeneratingReport && (
-            <div className="w-full pt-3 border-t border-slate-800/80 space-y-1.5">
-              <p className="text-[11px] font-semibold text-cyan-400 flex items-center justify-center gap-1.5">
+            <div className="w-full pt-3 border-t border-slate-200/80 space-y-1.5">
+              <p className="text-[11px] font-semibold text-cyan-600 flex items-center justify-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                 Generating your report…
               </p>
@@ -520,10 +520,10 @@ function Step2Interview({ interviewData, onFinish }) {
         <div className="grid grid-cols-1 gap-6 items-start">
 
         {/* Progress Tracker Bar */}
-        <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3">
-          <div className="flex justify-between items-center text-xs font-semibold text-slate-400">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 space-y-3">
+          <div className="flex justify-between items-center text-xs font-semibold text-slate-500">
             <span>Interview Progress</span>
-            <span className="text-cyan-400 font-bold">
+            <span className="text-cyan-600 font-bold">
               Question {currentIndex + 1} of {questions.length || 1}
             </span>
           </div>
@@ -537,10 +537,10 @@ function Step2Interview({ interviewData, onFinish }) {
                 key={idx}
                 className={`h-2 rounded-full transition-all duration-300 ${
                   idx === currentIndex
-                    ? 'bg-cyan-400 shadow-sm shadow-cyan-400/50'
+                    ? 'bg-cyan-400 shadow-sm shadow-cyan-500/50'
                     : idx < currentIndex
-                    ? 'bg-slate-700'
-                    : 'bg-slate-800/60'
+                    ? 'bg-slate-300'
+                    : 'bg-slate-100'
                 }`}
               />
             ))}
@@ -551,7 +551,7 @@ function Step2Interview({ interviewData, onFinish }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl space-y-6"
+          className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-xl shadow-slate-200/50 space-y-6"
         >
           <AnimatePresence mode="wait">
             
@@ -564,19 +564,19 @@ function Step2Interview({ interviewData, onFinish }) {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6 text-center py-8"
               >
-                <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center text-2xl mx-auto shadow-lg shadow-cyan-500/10">
+                <div className="w-16 h-16 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-600 flex items-center justify-center text-2xl mx-auto shadow-lg shadow-cyan-500/20">
                   <HiOutlineSparkles />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-slate-100">
+                  <h2 className="text-2xl font-bold text-slate-900">
                     Welcome, {username || 'Candidate'}!
                   </h2>
-                  <p className="text-sm text-slate-400 max-w-md mx-auto leading-relaxed">
+                  <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
                     You are ready to start your AI-evaluated interview. The AI will read each question aloud —
                     answer by typing or speaking, whichever is easier.
                   </p>
                   {!voiceOutputSupported || !voiceInputSupported ? (
-                    <p className="text-[11px] text-amber-400/80 max-w-md mx-auto leading-relaxed">
+                    <p className="text-[11px] text-amber-600/90 max-w-md mx-auto leading-relaxed">
                       Note: full voice support isn't available in this browser. Typed answers will still work fine —
                       try Chrome or Edge for voice features.
                     </p>
@@ -586,7 +586,7 @@ function Step2Interview({ interviewData, onFinish }) {
                 <button
                   type="button"
                   onClick={handleStartInterview}
-                  className="py-3.5 px-8 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 active:scale-[0.98] transition-all cursor-pointer inline-flex items-center gap-2"
+                  className="py-3.5 px-8 rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-sm shadow-lg shadow-cyan-500/25 active:scale-[0.98] transition-all cursor-pointer inline-flex items-center gap-2"
                 >
                   <span>Start Interview</span>
                   <HiOutlineChevronRight />
@@ -604,7 +604,7 @@ function Step2Interview({ interviewData, onFinish }) {
                 className="space-y-6"
               >
                 <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-slate-800 border border-slate-700 text-cyan-400 flex items-center gap-1.5">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-cyan-50 border border-cyan-200 text-cyan-700 flex items-center gap-1.5">
                     <HiOutlineQuestionMarkCircle />
                     {currentQuestion.difficulty || 'Technical'} Level
                   </span>
@@ -615,13 +615,13 @@ function Step2Interview({ interviewData, onFinish }) {
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-3">
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-2">
                       <p className="text-xs uppercase font-bold text-slate-500 tracking-wider">
                         Question #{currentIndex + 1}
                       </p>
-                      <h2 className="text-lg md:text-xl font-semibold text-slate-100 leading-snug">
+                      <h2 className="text-lg md:text-xl font-semibold text-slate-900 leading-snug">
                         {currentQuestion.question || 'Please write your response below.'}
                       </h2>
                     </div>
@@ -633,8 +633,8 @@ function Step2Interview({ interviewData, onFinish }) {
                         title={isSpeaking ? 'AI is speaking...' : 'Replay question aloud'}
                         className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
                           isSpeaking
-                            ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 animate-pulse'
-                            : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40'
+                            ? 'bg-cyan-100 border-cyan-300 text-cyan-700 animate-pulse'
+                            : 'bg-slate-100 border-slate-300 text-slate-500 hover:text-cyan-600 hover:border-cyan-200'
                         }`}
                       >
                         <HiOutlineVolumeUp className="text-lg" />
@@ -643,7 +643,7 @@ function Step2Interview({ interviewData, onFinish }) {
                   </div>
 
                   {isSpeaking && (
-                    <p className="text-[11px] text-cyan-400/80 flex items-center gap-1.5">
+                    <p className="text-[11px] text-cyan-600/80 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                       AI is asking the question...
                     </p>
@@ -652,7 +652,7 @@ function Step2Interview({ interviewData, onFinish }) {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
                       Your Response
                     </label>
 
@@ -664,8 +664,8 @@ function Step2Interview({ interviewData, onFinish }) {
                         title={isListening ? 'Stop recording' : 'Answer by speaking'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wide transition-all cursor-pointer disabled:opacity-50 ${
                           isListening
-                            ? 'bg-rose-500/15 border-rose-500/40 text-rose-400 animate-pulse'
-                            : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40'
+                            ? 'bg-rose-50 border-rose-200 text-rose-600 animate-pulse'
+                            : 'bg-slate-100 border-slate-300 text-slate-500 hover:text-cyan-600 hover:border-cyan-200'
                         }`}
                       >
                         {isListening ? (
@@ -691,15 +691,15 @@ function Step2Interview({ interviewData, onFinish }) {
                       setAnswerText(e.target.value);
                     }}
                     placeholder="Type your complete answer here, or tap 'Speak Answer' to use your voice..."
-                    className={`w-full p-4 bg-slate-950/80 border rounded-2xl text-slate-100 placeholder-slate-600 text-sm focus:outline-none focus:ring-1 transition-all resize-none ${
+                    className={`w-full p-4 bg-slate-50 border rounded-2xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-1 transition-all resize-none ${
                       isListening
-                        ? 'border-rose-500/60 focus:border-rose-500/60 focus:ring-rose-500/60'
-                        : 'border-slate-800 focus:border-cyan-500/60 focus:ring-cyan-500/60'
+                        ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-400'
+                        : 'border-slate-200 focus:border-cyan-400 focus:ring-cyan-400'
                     }`}
                   />
 
                   {isListening && (
-                    <p className="text-[11px] text-rose-400/80 flex items-center gap-1.5">
+                    <p className="text-[11px] text-rose-600/90 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping" />
                       Listening... speak clearly, then tap "Stop Listening" when done.
                     </p>
@@ -711,7 +711,7 @@ function Step2Interview({ interviewData, onFinish }) {
                     type="button"
                     disabled={isSubmitting}
                     onClick={() => submitAnswerToBackend('No answer provided')}
-                    className="text-xs text-slate-500 hover:text-slate-300 transition-colors cursor-pointer disabled:opacity-50"
+                    className="text-xs text-slate-500 hover:text-slate-600 transition-colors cursor-pointer disabled:opacity-50"
                   >
                     Skip Question
                   </button>
@@ -720,7 +720,7 @@ function Step2Interview({ interviewData, onFinish }) {
                     type="button"
                     disabled={isSubmitting || !answerText.trim()}
                     onClick={handleSubmitAnswer}
-                    className="py-3 px-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="py-3 px-6 rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-xs shadow-lg shadow-cyan-500/25 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     <span>{isSubmitting ? 'Evaluating...' : 'Submit Response'}</span>
                     <HiOutlineChevronRight className="text-sm" />
@@ -738,27 +738,27 @@ function Step2Interview({ interviewData, onFinish }) {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6 py-2"
               >
-                <div className="flex items-center gap-2 text-cyan-400 font-semibold text-sm">
+                <div className="flex items-center gap-2 text-cyan-600 font-semibold text-sm">
                   <HiOutlineCheckCircle className="text-lg" />
                   <span>Recorded Response for Question #{currentIndex + 1}</span>
                 </div>
 
                 {/* Recap of Question and Submitted Answer */}
-                <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-3">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                   <div>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                       Question
                     </p>
-                    <p className="text-sm font-semibold text-slate-200">
+                    <p className="text-sm font-semibold text-slate-800">
                       {evaluationResult.question || currentQuestion.question}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/80">
+                  <div className="pt-2 border-t border-slate-200/80">
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                       Submitted Answer
                     </p>
-                    <p className="text-xs text-slate-300 italic mt-0.5">
+                    <p className="text-xs text-slate-600 italic mt-0.5">
                       "{evaluationResult.answer || answerText}"
                     </p>
                   </div>
@@ -766,49 +766,49 @@ function Step2Interview({ interviewData, onFinish }) {
 
                 {/* Metric Grid */}
                 <div className="grid grid-cols-4 gap-2 text-center">
-                  <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                     <p className="text-[10px] uppercase font-bold text-slate-500">Overall</p>
-                    <p className="text-lg font-bold text-cyan-400">
+                    <p className="text-lg font-bold text-cyan-600">
                       {evaluationResult.score ?? 0}/10
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                     <p className="text-[10px] uppercase font-bold text-slate-500">Correctness</p>
-                    <p className="text-lg font-bold text-emerald-400">
+                    <p className="text-lg font-bold text-emerald-600">
                       {evaluationResult.correctness ?? 0}/10
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                     <p className="text-[10px] uppercase font-bold text-slate-500">Communication</p>
-                    <p className="text-lg font-bold text-indigo-400">
+                    <p className="text-lg font-bold text-indigo-600">
                       {evaluationResult.communication ?? 0}/10
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                     <p className="text-[10px] uppercase font-bold text-slate-500">Confidence</p>
-                    <p className="text-lg font-bold text-amber-400">
+                    <p className="text-lg font-bold text-amber-600">
                       {evaluationResult.confidence ?? 0}/10
                     </p>
                   </div>
                 </div>
 
                 {/* AI Feedback */}
-                <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-cyan-600 uppercase tracking-wider">
                     <HiOutlineSparkles />
                     <span>Evaluation Breakdown</span>
                   </div>
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-slate-600 leading-relaxed">
                     {evaluationResult.feedback}
                   </p>
                 </div>
 
                 {/* Report generation error (only relevant on the final question) */}
                 {reportError && currentIndex === questions.length - 1 && (
-                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-400">
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-600">
                     {reportError}
                   </div>
                 )}
@@ -819,7 +819,7 @@ function Step2Interview({ interviewData, onFinish }) {
                     type="button"
                     disabled={isSubmitting}
                     onClick={handleNextFromFeedback}
-                    className="py-3 px-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="py-3 px-6 rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-xs shadow-lg shadow-cyan-500/25 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     <span>
                       {currentIndex === questions.length - 1
@@ -849,18 +849,18 @@ function Step2Interview({ interviewData, onFinish }) {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6"
               >
-                <div className="flex items-center gap-2 text-cyan-400 font-semibold text-sm">
+                <div className="flex items-center gap-2 text-cyan-600 font-semibold text-sm">
                   <HiOutlineCheckCircle className="text-lg" />
                   <span>Your Interview Report</span>
                 </div>
 
                 {/* Overall score, if the backend provides one under any common key */}
                 {(reportData.overallScore ?? reportData.score ?? reportData.totalScore) !== undefined && (
-                  <div className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800 text-center space-y-1">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1">
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                       Overall Score
                     </p>
-                    <p className="text-3xl font-bold text-cyan-400">
+                    <p className="text-3xl font-bold text-cyan-600">
                       {reportData.overallScore ?? reportData.score ?? reportData.totalScore}
                       <span className="text-base text-slate-500">/10</span>
                     </p>
@@ -869,12 +869,12 @@ function Step2Interview({ interviewData, onFinish }) {
 
                 {/* Summary, if provided */}
                 {(reportData.summary || reportData.overview) && (
-                  <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
-                    <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-cyan-600 uppercase tracking-wider">
                       <HiOutlineSparkles />
                       <span>Summary</span>
                     </div>
-                    <p className="text-sm text-slate-300 leading-relaxed">
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       {reportData.summary || reportData.overview}
                     </p>
                   </div>
@@ -884,11 +884,11 @@ function Step2Interview({ interviewData, onFinish }) {
                 {(Array.isArray(reportData.strengths) || Array.isArray(reportData.improvements)) && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Array.isArray(reportData.strengths) && (
-                      <div className="p-4 rounded-2xl bg-slate-950/60 border border-emerald-500/20 space-y-2">
-                        <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                      <div className="p-4 rounded-2xl bg-slate-50 border border-emerald-200 space-y-2">
+                        <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">
                           Strengths
                         </p>
-                        <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                        <ul className="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
                           {reportData.strengths.map((item, idx) => (
                             <li key={idx}>{item}</li>
                           ))}
@@ -897,11 +897,11 @@ function Step2Interview({ interviewData, onFinish }) {
                     )}
 
                     {Array.isArray(reportData.improvements) && (
-                      <div className="p-4 rounded-2xl bg-slate-950/60 border border-amber-500/20 space-y-2">
-                        <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                      <div className="p-4 rounded-2xl bg-slate-50 border border-amber-200 space-y-2">
+                        <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">
                           Areas to Improve
                         </p>
-                        <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                        <ul className="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
                           {reportData.improvements.map((item, idx) => (
                             <li key={idx}>{item}</li>
                           ))}
@@ -913,11 +913,11 @@ function Step2Interview({ interviewData, onFinish }) {
 
                 {/* Recommendation, if provided */}
                 {reportData.recommendation && (
-                  <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-1">
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                       Recommendation
                     </p>
-                    <p className="text-sm text-slate-300">{reportData.recommendation}</p>
+                    <p className="text-sm text-slate-600">{reportData.recommendation}</p>
                   </div>
                 )}
 
@@ -928,11 +928,11 @@ function Step2Interview({ interviewData, onFinish }) {
                   !Array.isArray(reportData.strengths) &&
                   !Array.isArray(reportData.improvements) &&
                   !reportData.recommendation && (
-                    <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-2">
+                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                         Report Data
                       </p>
-                      <pre className="text-[11px] text-slate-300 whitespace-pre-wrap break-words">
+                      <pre className="text-[11px] text-slate-600 whitespace-pre-wrap break-words">
                         {JSON.stringify(reportData, null, 2)}
                       </pre>
                     </div>
@@ -942,7 +942,7 @@ function Step2Interview({ interviewData, onFinish }) {
                   <button
                     type="button"
                     onClick={handleFinishAndExit}
-                    className="py-3 px-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer"
+                    className="py-3 px-6 rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-xs shadow-lg shadow-cyan-500/25 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer"
                   >
                     <span>Continue</span>
                     <HiOutlineChevronRight className="text-sm" />
