@@ -38,12 +38,12 @@ function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="w-full max-w-sm rounded-2xl bg-slate-900 border border-slate-800 p-8 shadow-2xl"
+        className="w-full max-w-sm rounded-2xl bg-white border border-slate-200 p-8 shadow-xl shadow-slate-200/50"
       >
         <div className="flex items-center justify-center mb-6">
           <div className="flex items-center gap-3">
@@ -54,7 +54,7 @@ function Auth() {
               alt="InterviewX Logo"
               className="w-9 h-9 object-contain cursor-pointer"
             />
-            <h2 className="text-2xl font-bold tracking-tight text-slate-100">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
               InterviewX
             </h2>
           </div>
@@ -66,10 +66,10 @@ function Auth() {
           transition={{ delay: 0.1, duration: 0.3 }}
           className="text-center mb-8 space-y-1"
         >
-          <h1 className="text-lg font-semibold text-slate-100">
+          <h1 className="text-lg font-semibold text-slate-900">
             Continue with AI Smart Interview
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-500">
             Sign in to start with
           </p>
         </motion.div>
@@ -80,7 +80,7 @@ function Auth() {
           transition={{ delay: 0.2, duration: 0.3 }}
           whileHover={{ scale: 1.02, borderColor: 'rgba(6, 182, 212, 0.4)' }}
           whileTap={{ scale: 0.97 }}
-          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 font-medium cursor-pointer shadow-lg transition-colors hover:bg-slate-750"
+          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 text-slate-800 font-medium cursor-pointer shadow-sm transition-colors hover:bg-slate-200"
           onClick={handleGoogleAuth}
         >
           <FcGoogle className="text-xl" />
